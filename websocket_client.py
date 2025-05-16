@@ -28,7 +28,7 @@ class OrderBookClient:
                 self.latencies.append(latency)
                 logger.info(f"Tick @ {tick['timestamp']} processed in {latency:.6f}s")
             except asyncio.TimeoutError:
-                logger.warning("WebSocket timeout. Retrying...")
+                logger.warning("WebSocket timeout. Retrying to connect...")
 
     def process_tick(self, tick):
         self.orderbook['asks'] = sorted(
