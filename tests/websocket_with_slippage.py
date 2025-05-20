@@ -4,7 +4,8 @@ import json
 from loguru import logger
 import time
 from datetime import datetime
-from models.slippage_model import estimate_slippage  # 👈 import
+from models.slippage_model import estimate_slippage
+from models.fee_model import estimate_fee
 
 class OrderBookClient:
     def __init__(self, url: str, symbol: str):
@@ -29,17 +30,24 @@ class OrderBookClient:
                 latency = time.perf_counter() - start_time
                 self.latencies.append(latency)
 
-                # Real-time slippage estimation
                 buy_slip = estimate_slippage(self.orderbook, usd_amount=10_000, side='buy')
                 sell_slip = estimate_slippage(self.orderbook, usd_amount=10_000, side='sell')
+
+                fee = estimate_fee(usd_amount=10_000, role='taker')
 
                 logger.info(
                     f"Tick @ {tick['timestamp']} | "
                     f"Latency: {latency:.6f}s | "
-                    f"Buy Slippage: {buy_slip:.9f}% | Sell Slippage: {sell_slip:.9f}%"
+                    f"Buy Slippage: {buy_slip:.9f}% | "
+                    f"Sell Slippage: {sell_slip:.9f}% | "
+                    f"Fee: ${fee:.6f}"
                 )
+
             except asyncio.TimeoutError:
                 logger.warning("WebSocket timeout. Retrying...")
+
+
+
 
     def process_tick(self, tick):
         self.orderbook['asks'] = sorted(
