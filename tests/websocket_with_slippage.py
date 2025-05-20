@@ -36,7 +36,7 @@ class OrderBookClient:
                 logger.info(
                     f"Tick @ {tick['timestamp']} | "
                     f"Latency: {latency:.6f}s | "
-                    f"Buy Slippage: {buy_slip:.4f}% | Sell Slippage: {sell_slip:.4f}%"
+                    f"Buy Slippage: {buy_slip:.9f}% | Sell Slippage: {sell_slip:.9f}%"
                 )
             except asyncio.TimeoutError:
                 logger.warning("WebSocket timeout. Retrying...")
